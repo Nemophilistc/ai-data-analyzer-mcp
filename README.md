@@ -141,48 +141,45 @@ Or use individual parameters:
 
 ## How it works
 
-```mermaid
-graph TB
-    Client["🖥️ MCP Client<br/><i>Claude Code / Cursor</i>"]
-    Server["⚡ AI Data Analyzer MCP Server"]
-    Schema["📋 Schema Reader<br/><i>Tables, Columns, Relations</i>"]
-    Domain["🎯 Domain Detector<br/><i>Keyword + AI Inference</i>"]
-    AI["🤖 AI Client<br/><i>Claude / GPT</i>"]
-    Analyzers["🔬 Analyzer Modules"]
-    Health["❤️ Health Checker"]
-    Insight["💡 Insight Engine"]
-    Question["❓ Question Handler"]
-    DB["🗄️ Database Connector"]
-    PG["🐘 PostgreSQL"]
-    SQLite["📦 SQLite"]
-
-    Client ==>|"MCP Protocol"| Server
-    Server --> Schema
-    Server --> Domain
-    Server --> AI
-    Schema --> Analyzers
-    Domain --> Analyzers
-    AI --> Analyzers
-    Analyzers --> Health
-    Analyzers --> Insight
-    Analyzers --> Question
-    Health --> DB
-    Insight --> DB
-    Question --> DB
-    DB --> PG
-    DB --> SQLite
-
-    classDef client fill:#6366f1,stroke:#4f46e5,color:white,stroke-width:2px
-    classDef server fill:#f59e0b,stroke:#d97706,color:white,stroke-width:2px
-    classDef component fill:#10b981,stroke:#059669,color:white,stroke-width:2px
-    classDef analyzer fill:#8b5cf6,stroke:#7c3aed,color:white,stroke-width:2px
-    classDef db fill:#ef4444,stroke:#dc2626,color:white,stroke-width:2px
-
-    class Client client
-    class Server server
-    class Schema,Domain,AI component
-    class Analyzers,Health,Insight,Question analyzer
-    class DB,PG,SQLite db
+```
+                    ┌─────────────────────┐
+                    │    MCP Client       │
+                    │ Claude Code / Cursor│
+                    └──────────┬──────────┘
+                               │
+                         MCP Protocol
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────┐
+│              AI Data Analyzer MCP Server                     │
+│                                                             │
+│   ┌──────────────┐  ┌──────────────┐  ┌──────────────┐     │
+│   │ Schema Reader│  │Domain Detect │  │  AI Client   │     │
+│   │  Tables      │  │  Keywords    │  │ Claude / GPT │     │
+│   │  Columns     │  │  + AI        │  │              │     │
+│   │  Relations   │  │              │  │              │     │
+│   └──────┬───────┘  └──────┬───────┘  └──────┬───────┘     │
+│          │                 │                 │              │
+│          └────────────┬────┴─────────────────┘              │
+│                       │                                     │
+│                       ▼                                     │
+│              ┌────────────────┐                             │
+│              │ Analyzer Module│                             │
+│              ├────────────────┤                             │
+│              │ Health Checker │ → Data quality, metrics     │
+│              │ Insight Engine │ → Patterns, opportunities   │
+│              │Question Handler│ → Natural language Q&A      │
+│              └───────┬────────┘                             │
+│                      │                                      │
+└──────────────────────┼──────────────────────────────────────┘
+                       │
+                       ▼
+            ┌─────────────────────┐
+            │ Database Connector  │
+            ├─────────────────────┤
+            │    PostgreSQL  🐘   │
+            │    SQLite      📦   │
+            └─────────────────────┘
 ```
 
 **Three-layer architecture:**
