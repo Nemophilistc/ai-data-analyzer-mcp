@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.tgz
+.env
+.env.local
+.claude/
+scripts/
+实现指南.md
+设计思路.md

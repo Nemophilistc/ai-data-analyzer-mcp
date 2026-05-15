@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ai-data-analyzer": {
+      "command": "npx",
+      "args": ["ai-data-analyzer-mcp"],
+      "env": {
+        "AI_DATA_DB_TYPE": "postgresql",
+        "AI_DATA_DB_CONNECTION_STRING": "postgres://user:password@localhost:5432/mydb",
+        "ANTHROPIC_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}

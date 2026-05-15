@@ -1,0 +1,11 @@
+tests/
+src/
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+.github/
+examples/
+scripts/
+.claude/
+*.md
+!/README.md

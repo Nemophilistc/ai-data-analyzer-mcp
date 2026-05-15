@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "ai-data-analyzer": {
+      "command": "npx",
+      "args": ["ai-data-analyzer-mcp"],
+      "env": {
+        "AI_DATA_DB_TYPE": "sqlite",
+        "AI_DATA_DB_FILE": "./data.db",
+        "ANTHROPIC_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
