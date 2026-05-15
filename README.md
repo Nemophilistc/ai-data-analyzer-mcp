@@ -141,34 +141,24 @@ Or use individual parameters:
 
 ## How it works
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    MCP Client                        │
-│              (Claude Code / Cursor)                  │
-└──────────────────────┬──────────────────────────────┘
-                       │ MCP Protocol
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│              AI Data Analyzer MCP Server             │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ Schema   │  │ Domain   │  │  AI Client       │  │
-│  │ Reader   │→ │ Detector │→ │  (Claude/GPT)    │  │
-│  └──────────┘  └──────────┘  └──────────────────┘  │
-│       │              │               │              │
-│       ▼              ▼               ▼              │
-│  ┌──────────────────────────────────────────────┐   │
-│  │            Analyzer Modules                  │   │
-│  │  • Health Checker  • Insight Engine          │   │
-│  │  • Question Handler                          │   │
-│  └──────────────────────────────────────────────┘   │
-│                       │                             │
-│                       ▼                             │
-│  ┌──────────────────────────────────────────────┐   │
-│  │         Database Connector                   │   │
-│  │     (PostgreSQL / SQLite)                    │   │
-│  └──────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    Client["MCP Client<br/>(Claude Code / Cursor)"]
+    Server["AI Data Analyzer MCP Server"]
+    Schema["Schema Reader"]
+    Domain["Domain Detector"]
+    AI["AI Client<br/>(Claude / GPT)"]
+    Analyzers["Analyzer Modules<br/>• Health Checker<br/>• Insight Engine<br/>• Question Handler"]
+    DB["Database Connector<br/>(PostgreSQL / SQLite)"]
+
+    Client -->|"MCP Protocol"| Server
+    Server --> Schema
+    Server --> Domain
+    Server --> AI
+    Schema --> Analyzers
+    Domain --> Analyzers
+    AI --> Analyzers
+    Analyzers --> DB
 ```
 
 **Three-layer architecture:**

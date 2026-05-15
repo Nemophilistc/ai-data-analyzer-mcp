@@ -140,34 +140,24 @@ npx ai-data-analyzer-mcp
 
 ## 工作原理
 
-```
-┌─────────────────────────────────────────────────────┐
-│                    MCP 客户端                        │
-│              (Claude Code / Cursor)                  │
-└──────────────────────┬──────────────────────────────┘
-                       │ MCP 协议
-                       ▼
-┌─────────────────────────────────────────────────────┐
-│              AI Data Analyzer MCP Server             │
-│                                                     │
-│  ┌──────────┐  ┌──────────┐  ┌──────────────────┐  │
-│  │ Schema   │  │ Domain   │  │  AI Client       │  │
-│  │ Reader   │→ │ Detector │→ │  (Claude/GPT)    │  │
-│  └──────────┘  └──────────┘  └──────────────────┘  │
-│       │              │               │              │
-│       ▼              ▼               ▼              │
-│  ┌──────────────────────────────────────────────┐   │
-│  │            分析器模块                         │   │
-│  │  • 健康检查器  • 洞察引擎                    │   │
-│  │  • 问答处理器                                │   │
-│  └──────────────────────────────────────────────┘   │
-│                       │                             │
-│                       ▼                             │
-│  ┌──────────────────────────────────────────────┐   │
-│  │         数据库连接器                          │   │
-│  │     (PostgreSQL / SQLite)                    │   │
-│  └──────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    Client["MCP 客户端<br/>(Claude Code / Cursor)"]
+    Server["AI Data Analyzer MCP Server"]
+    Schema["Schema Reader<br/>读取表结构"]
+    Domain["Domain Detector<br/>领域检测"]
+    AI["AI Client<br/>(Claude / GPT)"]
+    Analyzers["分析器模块<br/>• 健康检查器<br/>• 洞察引擎<br/>• 问答处理器"]
+    DB["数据库连接器<br/>(PostgreSQL / SQLite)"]
+
+    Client -->|"MCP 协议"| Server
+    Server --> Schema
+    Server --> Domain
+    Server --> AI
+    Schema --> Analyzers
+    Domain --> Analyzers
+    AI --> Analyzers
+    Analyzers --> DB
 ```
 
 **三层架构：**
