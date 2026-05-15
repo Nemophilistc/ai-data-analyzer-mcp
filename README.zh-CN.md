@@ -142,22 +142,46 @@ npx ai-data-analyzer-mcp
 
 ```mermaid
 graph TB
-    Client["MCP 客户端<br/>(Claude Code / Cursor)"]
-    Server["AI Data Analyzer MCP Server"]
-    Schema["Schema Reader<br/>读取表结构"]
-    Domain["Domain Detector<br/>领域检测"]
-    AI["AI Client<br/>(Claude / GPT)"]
-    Analyzers["分析器模块<br/>• 健康检查器<br/>• 洞察引擎<br/>• 问答处理器"]
-    DB["数据库连接器<br/>(PostgreSQL / SQLite)"]
+    Client["🖥️ MCP 客户端<br/><i>Claude Code / Cursor</i>"]
+    Server["⚡ AI Data Analyzer MCP Server"]
+    Schema["📋 Schema 读取器<br/><i>表、列、关系</i>"]
+    Domain["🎯 领域检测器<br/><i>关键词 + AI 推断</i>"]
+    AI["🤖 AI 客户端<br/><i>Claude / GPT</i>"]
+    Analyzers["🔬 分析器模块"]
+    Health["❤️ 健康检查器"]
+    Insight["💡 洞察引擎"]
+    Question["❓ 问答处理器"]
+    DB["🗄️ 数据库连接器"]
+    PG["🐘 PostgreSQL"]
+    SQLite["📦 SQLite"]
 
-    Client -->|"MCP 协议"| Server
+    Client ==>|"MCP 协议"| Server
     Server --> Schema
     Server --> Domain
     Server --> AI
     Schema --> Analyzers
     Domain --> Analyzers
     AI --> Analyzers
-    Analyzers --> DB
+    Analyzers --> Health
+    Analyzers --> Insight
+    Analyzers --> Question
+    Health --> DB
+    Insight --> DB
+    Question --> DB
+    DB --> PG
+    DB --> SQLite
+
+    classDef client fill:#6366f1,stroke:#4f46e5,color:white,stroke-width:2px
+    classDef server fill:#f59e0b,stroke:#d97706,color:white,stroke-width:2px
+    classDef component fill:#10b981,stroke:#059669,color:white,stroke-width:2px
+    classDef analyzer fill:#8b5cf6,stroke:#7c3aed,color:white,stroke-width:2px
+    classDef db fill:#ef4444,stroke:#dc2626,color:white,stroke-width:2px
+
+    class Client client
+    class Server server
+    class Schema,Domain,AI component
+    class Analyzers,Health,Insight,Question analyzer
+    class DB,PG,SQLite db
 ```
 
 **三层架构：**

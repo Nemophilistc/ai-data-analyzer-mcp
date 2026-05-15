@@ -1,6 +1,6 @@
 {
   "name": "ai-data-analyzer-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI-powered database analyzer MCP Server. Connect your database, get automatic insights.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
