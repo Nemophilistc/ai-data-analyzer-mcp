@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 import pg from 'pg';
 import Database from 'better-sqlite3';
 import type { DatabaseConfig } from '../types/database.js';

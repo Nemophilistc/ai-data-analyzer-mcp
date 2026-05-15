@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 export class AIClient {
   private provider: 'anthropic' | 'openai' | null = null;
   private apiKey: string = '';

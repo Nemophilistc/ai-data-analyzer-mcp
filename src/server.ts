@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {

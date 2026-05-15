@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 import type {
   DomainDetectionResult,
   HealthReport,

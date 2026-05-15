@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 export const PROMPTS = {
   domainDetection: (schemaSummary: string) => `
 You are a database schema analyst. Given the following database schema, determine what type of application this database supports.

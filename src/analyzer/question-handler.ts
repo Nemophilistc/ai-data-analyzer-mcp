@@ -1,3 +1,6 @@
+// Copyright (c) 2026 MIMO. MIT License.
+// https://github.com/Nemophilistc/ai-data-analyzer-mcp
+
 import { SchemaReader } from '../db/schema-reader.js';
 import { QueryExecutor } from '../db/query-executor.js';
 import { AIClient } from '../ai/client.js';
