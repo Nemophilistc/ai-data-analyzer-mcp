@@ -2,10 +2,23 @@
 // https://github.com/Nemophilistc/ai-data-analyzer-mcp
 
 export class AIClient {
-  private provider: 'anthropic' | 'openai' | null = null;
+  private provider: 'anthropic' | 'openai' | 'deepseek' | 'ollama' | null = null;
   private apiKey: string = '';
+  private baseUrl: string = '';
+  private model: string = '';
 
   constructor() {
+    // Web mode: unified config via AI_PROVIDER + AI_API_KEY + AI_BASE_URL
+    const webProvider = process.env.AI_PROVIDER;
+    if (webProvider) {
+      this.provider = webProvider as any;
+      this.apiKey = process.env.AI_API_KEY || '';
+      this.baseUrl = process.env.AI_BASE_URL || '';
+      this.model = process.env.AI_MODEL || '';
+      return;
+    }
+
+    // MCP mode: original env var detection
     const anthropicKey = process.env.ANTHROPIC_API_KEY;
     const openaiKey = process.env.OPENAI_API_KEY;
 
@@ -20,7 +33,7 @@ export class AIClient {
 
   async chat(systemPrompt: string, userMessage: string): Promise<string> {
     if (!this.provider) {
-      throw new Error('Please set ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable');
+      throw new Error('Please set AI_API_KEY or ANTHROPIC_API_KEY or OPENAI_API_KEY environment variable');
     }
 
     for (let attempt = 0; attempt < 3; attempt++) {
@@ -28,7 +41,7 @@ export class AIClient {
         if (this.provider === 'anthropic') {
           return await this.callAnthropic(systemPrompt, userMessage);
         }
-        return await this.callOpenAI(systemPrompt, userMessage);
+        return await this.callOpenAICompat(systemPrompt, userMessage);
       } catch (err: any) {
         if (attempt === 2) throw err;
         const delay = Math.pow(2, attempt) * 1000;
@@ -78,7 +91,7 @@ export class AIClient {
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
+          model: this.model || 'claude-sonnet-4-20250514',
           max_tokens: 4096,
           system: systemPrompt,
           messages: [{ role: 'user', content: userMessage }],
@@ -98,19 +111,22 @@ export class AIClient {
     }
   }
 
-  private async callOpenAI(systemPrompt: string, userMessage: string): Promise<string> {
+  private async callOpenAICompat(systemPrompt: string, userMessage: string): Promise<string> {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
 
+    const baseUrl = this.baseUrl || 'https://api.openai.com/v1';
+    const model = this.model || 'gpt-4o';
+
     try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      const response = await fetch(`${baseUrl}/chat/completions`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${this.apiKey}`,
           'content-type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o',
+          model,
           max_tokens: 4096,
           messages: [
             { role: 'system', content: systemPrompt },
@@ -122,7 +138,7 @@ export class AIClient {
 
       if (!response.ok) {
         const errorBody = await response.text();
-        throw new Error(`OpenAI API error ${response.status}: ${errorBody}`);
+        throw new Error(`AI API error ${response.status}: ${errorBody}`);
       }
 
       const data = await response.json() as any;

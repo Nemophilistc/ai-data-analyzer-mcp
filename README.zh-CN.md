@@ -1,225 +1,152 @@
-# AI Data Analyzer MCP
+# AI Data Analyzer
 
 [![npm version](https://img.shields.io/npm/v/ai-data-analyzer-mcp)](https://www.npmjs.com/package/ai-data-analyzer-mcp)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-> AI 驱动的数据库分析 MCP Server。连接数据库，自动获得洞察。
-
-## 这是什么？
-
-AI Data Analyzer MCP 是一个 MCP (Model Context Protocol) Server，连接到你的数据库并充当 AI 数据分析师。无需手动编写 SQL 查询，即可获得自动健康检查、主动洞察和自然语言问答。
-
-**与 DBHub 或 Google MCP Toolbox 的区别**：那些工具是面向开发者的 SQL 翻译器，而这个工具像高级数据分析师一样思考——它主动发现问题、模式和机会，而不需要你先提出问题。
-
-**使用场景**：连接你的 PostgreSQL 或 SQLite 数据库，几秒内获得数据质量报告、关键业务指标、隐藏异常和可执行建议。
+> 一条命令，用 AI 分析任何数据库。无需配置文件，开箱即用。
 
 ## 快速开始
+
+```bash
+npx ai-data-analyzer
+```
+
+就这么简单。首次运行会引导你选择 AI 提供商并输入 API Key，然后自动打开浏览器，直接开始分析。
+
+```
+$ npx ai-data-analyzer
+
+  🔍 AI Data Analyzer
+  AI 驱动的数据库分析工具
+
+  === 首次配置 ===
+
+  选择 AI 提供商:
+    1) OpenAI     (GPT-4o，需要 API Key)
+    2) DeepSeek   (DeepSeek-V3，需要 API Key)
+    3) Ollama     (本地模型，免费)
+
+  输入编号 (1-3): 2
+  输入 DeepSeek API Key: sk-xxxx
+
+  ✓ 配置已保存到 .env
+  ✓ 服务已启动: http://localhost:3456
+```
+
+在聊天界面中，连接数据库后直接提问：
+
+- "帮我做一次数据体检"
+- "这个数据库里有什么隐藏的趋势？"
+- "上个月收入最高的产品是什么？"
+
+## 功能特点
+
+- **一条命令启动** — `npx ai-data-analyzer`，就这么简单
+- **多 AI 提供商** — 支持 OpenAI、DeepSeek、Ollama（本地免费）
+- **智能分析** — 不只是 SQL 翻译，主动做健康检查、异常检测、趋势发现
+- **自然语言** — 用中文/英文提问，获得有解读的回答
+- **安全设计** — 只读查询，不会修改任何数据
+- **双模式** — Web UI 给所有人用，MCP Server 给开发者用
+
+## 支持的数据库
+
+| 数据库 | 连接方式 |
+|--------|---------|
+| SQLite | 文件路径（如 `./data.db`） |
+| PostgreSQL | 连接字符串（如 `postgres://user:pass@host:5432/db`） |
+
+## 支持的 AI 提供商
+
+| 提供商 | API Key | 模型 | 地址 |
+|--------|---------|------|------|
+| OpenAI | 需要 | gpt-4o | api.openai.com |
+| DeepSeek | 需要 | deepseek-chat | api.deepseek.com |
+| Ollama | 不需要 | qwen2.5:7b | localhost:11434 |
+
+## MCP Server 模式
+
+本工具也可作为 MCP Server，用于 Claude Code、Cursor 等 MCP 兼容客户端。
 
 ### Claude Code
 
 ```bash
-npx ai-data-analyzer-mcp
-```
-
-添加到 Claude Code MCP 配置 (`~/.claude/claude_code_config.json`)：
-
-```json
-{
-  "mcpServers": {
-    "ai-data-analyzer": {
-      "command": "npx",
-      "args": ["ai-data-analyzer-mcp"],
-      "env": {
-        "AI_DATA_DB_TYPE": "sqlite",
-        "AI_DATA_DB_FILE": "./your-database.db",
-        "ANTHROPIC_API_KEY": "sk-ant-..."
-      }
-    }
-  }
-}
+claude mcp add ai-data-analyzer -- npx ai-data-analyzer-mcp
 ```
 
 ### Cursor
 
-添加到 Cursor MCP 配置 (`.cursor/mcp.json`)：
+添加到 `.cursor/mcp.json`：
 
 ```json
 {
   "mcpServers": {
     "ai-data-analyzer": {
       "command": "npx",
-      "args": ["ai-data-analyzer-mcp"],
-      "env": {
-        "AI_DATA_DB_TYPE": "postgresql",
-        "AI_DATA_DB_CONNECTION_STRING": "postgres://user:pass@localhost:5432/mydb",
-        "ANTHROPIC_API_KEY": "sk-ant-..."
-      }
+      "args": ["ai-data-analyzer-mcp"]
     }
   }
 }
 ```
 
-### 环境变量
+### 环境变量（MCP 模式）
 
-| 变量 | 必需 | 说明 |
-|------|------|------|
-| `AI_DATA_DB_TYPE` | 是 | `postgresql` 或 `sqlite` |
-| `AI_DATA_DB_CONNECTION_STRING` | PG | PostgreSQL 连接字符串 |
-| `AI_DATA_DB_FILE` | SQLite | SQLite 数据库文件路径 |
-| `ANTHROPIC_API_KEY` | 是* | Anthropic API key (Claude) |
-| `OPENAI_API_KEY` | 是* | OpenAI API key (GPT-4o) |
-
-*`ANTHROPIC_API_KEY` 或 `OPENAI_API_KEY` 需要设置其中一个。
+| 变量 | 说明 |
+|------|------|
+| `AI_DATA_DB_TYPE` | `postgresql` 或 `sqlite` |
+| `AI_DATA_DB_FILE` | SQLite 文件路径 |
+| `AI_DATA_DB_CONNECTION_STRING` | PostgreSQL 连接字符串 |
+| `ANTHROPIC_API_KEY` | Anthropic API key |
+| `OPENAI_API_KEY` | OpenAI API key |
 
 ## 可用工具
 
 ### `connect_database`
-连接数据库。必须首先调用。
-
-**参数：**
-- `type`（必需）：`"postgresql"` 或 `"sqlite"`
-- `connectionString`：PostgreSQL 连接字符串
-- `filePath`：SQLite 文件路径
+连接 PostgreSQL 或 SQLite 数据库。必须首先调用。
 
 ### `analyze_schema`
-分析数据库 schema。自动检测业务领域（电商、内容平台等）并提供结构概览。
-
-**参数：** 无
+分析数据库结构，自动检测业务领域（电商、内容平台等）。
 
 ### `data_health_check`
-运行全面的数据健康检查。检测数据质量问题、计算关键指标、发现异常、识别业务风险。
-
-**参数：**
-- `sampleSize`（可选）：采样行数（默认：1000）
+全面数据质量检查——发现异常、缺失数据、不一致和业务风险。
 
 ### `discover_insights`
-主动发现数据中隐藏的模式、机会、风险和趋势。
-
-**参数：**
-- `focus`（可选）：重点领域，如 `"revenue"`、`"user_retention"`
-- `maxInsights`（可选）：最大洞察数（默认：5）
+主动发现数据中隐藏的模式、趋势和机会。
 
 ### `ask_question`
-用自然语言提问。AI 会生成 SQL、执行查询并提供分析解读。
+自然语言问答。AI 生成 SQL、执行查询并解读结果。
 
-**参数：**
-- `question`（必需）：你的问题
-- `includeSql`（可选）：是否在响应中包含生成的 SQL（默认：true）
-
-## 支持的数据库
-
-### PostgreSQL
-
-```json
-{
-  "AI_DATA_DB_TYPE": "postgresql",
-  "AI_DATA_DB_CONNECTION_STRING": "postgres://user:password@host:5432/dbname"
-}
-```
-
-或使用单独参数：
-```json
-{
-  "AI_DATA_DB_TYPE": "postgresql",
-  "AI_DATA_DB_HOST": "localhost",
-  "AI_DATA_DB_PORT": "5432",
-  "AI_DATA_DB_NAME": "mydb",
-  "AI_DATA_DB_USER": "myuser",
-  "AI_DATA_DB_PASSWORD": "mypass"
-}
-```
-
-### SQLite
-
-```json
-{
-  "AI_DATA_DB_TYPE": "sqlite",
-  "AI_DATA_DB_FILE": "./path/to/database.db"
-}
-```
-
-## 工作原理
+## 架构
 
 ```mermaid
 graph TB
-    Client["🖥️ MCP 客户端<br/><i>Claude Code / Cursor</i>"]
-    Server["⚡ AI Data Analyzer MCP Server"]
-    Schema["📋 Schema 读取器<br/><i>表、列、关系</i>"]
-    Domain["🎯 领域检测器<br/><i>关键词 + AI 推断</i>"]
-    AI["🤖 AI 客户端<br/><i>Claude / GPT</i>"]
-    Analyzers["🔬 分析器模块"]
-    Health["❤️ 健康检查器"]
-    Insight["💡 洞察引擎"]
-    Question["❓ 问答处理器"]
-    DB["🗄️ 数据库连接器"]
-    PG["🐘 PostgreSQL"]
-    SQLite["📦 SQLite"]
+    subgraph "Web 模式"
+        Browser["🌐 浏览器"] -->|"HTTP"| WebServer["⚡ Web 服务"]
+    end
+    subgraph "MCP 模式"
+        MCPClient["🖥️ MCP 客户端"] -->|"MCP 协议"| MCPServer["⚡ MCP 服务"]
+    end
+    WebServer --> AI["🤖 AI 提供商"]
+    MCPServer --> AI
+    AI --> Analyzers["🔬 分析器"]
+    Analyzers --> Health["❤️ 健康检查"]
+    Analyzers --> Insight["💡 洞察发现"]
+    Analyzers --> Question["❓ 自然语言问答"]
+    Analyzers --> Domain["🎯 领域检测"]
+    Analyzers --> DB["🗄️ 数据库"]
+    DB --> PG["🐘 PostgreSQL"]
+    DB --> SQLite["📦 SQLite"]
 
-    Client ==>|"MCP 协议"| Server
-    Server --> Schema
-    Server --> Domain
-    Server --> AI
-    Schema --> Analyzers
-    Domain --> Analyzers
-    AI --> Analyzers
-    Analyzers --> Health
-    Analyzers --> Insight
-    Analyzers --> Question
-    Health --> DB
-    Insight --> DB
-    Question --> DB
-    DB --> PG
-    DB --> SQLite
-
-    classDef client fill:#6366f1,stroke:#4f46e5,color:white,stroke-width:2px
-    classDef server fill:#f59e0b,stroke:#d97706,color:white,stroke-width:2px
-    classDef component fill:#10b981,stroke:#059669,color:white,stroke-width:2px
+    classDef web fill:#6366f1,stroke:#4f46e5,color:white,stroke-width:2px
+    classDef mcp fill:#f59e0b,stroke:#d97706,color:white,stroke-width:2px
+    classDef ai fill:#10b981,stroke:#059669,color:white,stroke-width:2px
     classDef analyzer fill:#8b5cf6,stroke:#7c3aed,color:white,stroke-width:2px
     classDef db fill:#ef4444,stroke:#dc2626,color:white,stroke-width:2px
 
-    class Client client
-    class Server server
-    class Schema,Domain,AI component
-    class Analyzers,Health,Insight,Question analyzer
+    class Browser,WebServer web
+    class MCPClient,MCPServer mcp
+    class AI ai
+    class Analyzers,Health,Insight,Question,Domain analyzer
     class DB,PG,SQLite db
-```
-
-**三层架构：**
-1. **Schema 发现** — 读取数据库结构（表、列、关系）
-2. **领域检测** — 通过关键词匹配 + AI 推断识别业务领域
-3. **AI 分析** — 生成洞察、健康报告、回答问题
-
-## 示例
-
-### 示例 1：数据库健康检查
-
-```
-用户：检查我的数据库健康状况
-
-AI：我来分析你的数据库。先连接然后运行健康检查。
-
-[connect_database → data_health_check]
-
-结果：
-- 数据质量：发现 3 个问题（2 个中等，1 个高严重性）
-- 关键指标：1,234 用户，5,678 订单，$89,012 GMV
-- 异常：3月15日退款量异常飙升
-- 风险：15% 的用户邮箱为 NULL
-```
-
-### 示例 2：自然语言问答
-
-```
-用户：上个月收入最高的 5 个产品是什么？
-
-AI：让我查询你的数据库。
-
-[ask_question]
-
-回答：2026年4月收入前5的产品：
-1. MacBook Pro — $14,999（15台）
-2. iPhone 15 — $7,999（23台）
-...
 ```
 
 ## 贡献

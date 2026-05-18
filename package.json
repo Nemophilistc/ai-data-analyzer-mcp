@@ -1,18 +1,19 @@
 {
   "name": "ai-data-analyzer-mcp",
-  "version": "0.1.1",
-  "description": "AI-powered database analyzer MCP Server. Connect your database, get automatic insights.",
+  "version": "0.2.0",
+  "description": "AI-powered database analyzer. One command to analyze any database with AI.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
-    "ai-data-analyzer": "dist/index.js"
+    "ai-data-analyzer": "dist/cli.js"
   },
   "type": "module",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "start:web": "node dist/cli.js"
   },
   "keywords": [
     "mcp",
@@ -21,7 +22,10 @@
     "ai",
     "data-analysis",
     "postgresql",
-    "sqlite"
+    "sqlite",
+    "analytics",
+    "data-analyzer",
+    "npx"
   ],
   "license": "MIT",
   "engines": {
